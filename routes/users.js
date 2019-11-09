@@ -25,7 +25,7 @@ router.post('/create', function(req, res) {
       const avatar = gravatar.url(req.body.email, {
         s: '200',
         r: 'pg',
-        d: 'mm'
+        d: 'wavatar'
       });
       const newUser = new UserDAO({
         firstName: req.body.firstName,
@@ -56,18 +56,26 @@ router.post('/create', function(req, res) {
 });
 
 router.post('/fbLogin', (req, res) => {
-  const avatar = req.body.picture;
-  const doj = Date.now();
-  const newUser = new UserDAO({
-    firstName: req.body.name,
-    email: req.body.email,
-    date: doj,
-    userType: 'participant',
-    avatar
-  });
-  newUser.save().then(user => {
-    console.log(user);
-    res.json(user);
+  UserDAO.findOne({
+    email: req.body.email
+  }).then(user => {
+    if (user) {
+      return res.json(user);
+    } else {
+      const avatar = req.body.picture;
+      const doj = Date.now();
+      const newUser = new UserDAO({
+        firstName: req.body.name,
+        email: req.body.email,
+        date: doj,
+        userType: 'participant',
+        avatar
+      });
+      newUser.save().then(user => {
+        console.log(user);
+        res.json(user);
+      });
+    }
   });
 });
 
