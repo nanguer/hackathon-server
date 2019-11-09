@@ -6,16 +6,14 @@ var UserSchema = new mongoose.Schema({
     required: true
   },
   lastName: {
-    type: String,
-    required: true
+    type: String
   },
   email: {
     type: String,
     required: true
   },
   password: {
-    type: String,
-    required: true
+    type: String
   },
   avatar: {
     type: String
@@ -25,7 +23,6 @@ var UserSchema = new mongoose.Schema({
   },
   date: {
     type: Date
-    //default: Date.now
   },
   teams: [
     {

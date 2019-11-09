@@ -55,6 +55,22 @@ router.post('/create', function(req, res) {
   });
 });
 
+router.post('/fbLogin', (req, res) => {
+  const avatar = req.body.user.picture;
+  const doj = Date.now();
+  const newUser = new UserDAO({
+    firstName: req.body.user.name,
+    email: req.body.email,
+    date: doj,
+    userType: 'participant',
+    avatar
+  });
+  newUser.save().then(user => {
+    console.log(user);
+    res.json(user);
+  });
+});
+
 router.post('/login', (req, res) => {
   const { errors, isValid } = validateLoginInput(req.body);
 
