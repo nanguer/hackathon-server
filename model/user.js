@@ -6,14 +6,16 @@ var UserSchema = new mongoose.Schema({
     required: true
   },
   lastName: {
-    type: String
+    type: String,
+    required: true
   },
   email: {
     type: String,
     required: true
   },
   password: {
-    type: String
+    type: String,
+    required: true
   },
   avatar: {
     type: String
