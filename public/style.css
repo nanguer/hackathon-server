@@ -50,6 +50,12 @@
 	font-weight: 700;
 }
 
+.placesInput{
+	border: 1px solid lightgray;
+    height: 2.3rem;
+    border-radius: 3px;
+}
+
 .placesInput:focus {
 	border: none;
 }
