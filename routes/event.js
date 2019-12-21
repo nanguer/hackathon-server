@@ -1,14 +1,13 @@
-var EventDAO = require('../model/eventModel');
-var UserDAO = require('../model/user');
-var TeamDAO = require('../model/teamModel');
-var express = require('express');
+var EventDAO = require("../model/eventModel");
+var UserDAO = require("../model/user");
+var TeamDAO = require("../model/teamModel");
+var express = require("express");
 var router = express.Router();
 
-const validateAddEvent = require('../validation/addEvent');
-const validateScore = require('../validation/score');
+const validateAddEvent = require("../validation/addEvent");
+const validateScore = require("../validation/score");
 
-router.get('/', function(req, res) {
-  console.log('getting all events... ');
+router.get("/", function(req, res) {
   EventDAO.find({}, function(err, events) {
     if (err) res.send(err);
     else {
@@ -17,8 +16,7 @@ router.get('/', function(req, res) {
   });
 });
 
-router.get('/edit/:id', function(req, res) {
-  console.log('gettting event by _id... ' + req.params.id);
+router.get("/edit/:id", function(req, res) {
   EventDAO.findOne({ _id: req.params.id }, function(err, event) {
     if (err) res.send(err);
     else {
@@ -27,7 +25,7 @@ router.get('/edit/:id', function(req, res) {
   });
 });
 
-router.post('/create', function(req, res) {
+router.post("/create", function(req, res) {
   const { errors, isValid } = validateAddEvent(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
@@ -43,7 +41,6 @@ router.post('/create', function(req, res) {
     newEvent.evaluator = req.body.evaluator;
     newEvent.latLng = req.body.latLng;
 
-    console.log('Adding New Event.....');
     newEvent.save(function(err, event) {
       if (err) res.send(err);
       else {
@@ -53,8 +50,7 @@ router.post('/create', function(req, res) {
   }
 });
 
-router.put('/:id', function(req, res) {
-  console.log(req.body);
+router.put("/:id", function(req, res) {
   const { errors, isValid } = validateAddEvent(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
@@ -85,8 +81,7 @@ router.put('/:id', function(req, res) {
   }
 });
 
-router.delete('/:id', function(req, res) {
-  console.log('deleting issue by _id... ' + req.params.id);
+router.delete("/:id", function(req, res) {
   EventDAO.findOneAndRemove({ _id: req.params.id }, function(err, event) {
     if (err) res.send(err);
     else {
@@ -94,8 +89,7 @@ router.delete('/:id', function(req, res) {
     }
   });
 });
-router.get('/getHosts/:host', function(req, res) {
-  console.log('getting all hosts... ');
+router.get("/getHosts/:host", function(req, res) {
   UserDAO.find({ host: req.params.host }, function(err, hosts) {
     if (err) {
       console.log(err);
@@ -105,8 +99,7 @@ router.get('/getHosts/:host', function(req, res) {
     }
   });
 });
-router.get('/getEvaluators/:evaluator', function(req, res) {
-  console.log('getting all Evaluators... ');
+router.get("/getEvaluators/:evaluator", function(req, res) {
   UserDAO.find({ evaluator: req.params.evaluator }, function(err, evaluators) {
     if (err) {
       console.log(err);
@@ -117,17 +110,15 @@ router.get('/getEvaluators/:evaluator', function(req, res) {
   });
 });
 
-router.get('/userdeatils/:id', function(req, res) {
-  console.log('updating issue by _id... ' + req.params.id);
-  console.log('updating issue by _id... ' + UserDAO.collection.name);
+router.get("/userdeatils/:id", function(req, res) {
 
   EventDAO.aggregate([
     {
       $lookup: {
-        from: 'users',
-        localField: 'host',
-        foreignField: '_id',
-        as: 'user'
+        from: "users",
+        localField: "host",
+        foreignField: "_id",
+        as: "user"
       }
     },
     {
@@ -135,12 +126,7 @@ router.get('/userdeatils/:id', function(req, res) {
         host: req.params.id
       }
     }
-    //   ,
-    //   {
-    //    $project:{
-    //       host_name:"$user.firstname"
-    //    }
-    //   }
+
   ]).exec(function(err, event) {
     if (err) res.send(err);
     else {
@@ -148,8 +134,7 @@ router.get('/userdeatils/:id', function(req, res) {
     }
   });
 });
-router.get('/eventDetails/:id', async function(req, res) {
-  console.log('Getting Event Details _id... ' + req.params.id);
+router.get("/eventDetails/:id", async function(req, res) {
   let eventDetails = await EventDAO.findById({ _id: req.params.id });
   let hostDetails = await UserDAO.findOne({ _id: eventDetails.host });
   let evaluatorDetails = await UserDAO.findOne({ _id: eventDetails.evaluator });
@@ -161,9 +146,9 @@ router.get('/eventDetails/:id', async function(req, res) {
   res.json(event1);
 });
 
-router.get('/:id/ideas', function(req, res) {
+router.get("/:id/ideas", function(req, res) {
   EventDAO.findOne({ _id: req.params.id })
-    .populate('teams')
+    .populate("teams")
     .exec((err, event) => {
       if (err) {
         console.log(err);
@@ -173,14 +158,12 @@ router.get('/:id/ideas', function(req, res) {
     });
 });
 
-router.get('/getEvents/:id', async function(req, res) {
-  //console.log('gettting events by userid... ' + req.params.id);
+router.get("/getEvents/:id", async function(req, res) {
   const eventsArr = await EventDAO.find({ _id: req.params.id });
   res.json(eventsArr);
 });
 
-router.get('/getHostEvents/:id', function(req, res) {
-  console.log('gettting get host events by userid... ' + req.params.id);
+router.get("/getHostEvents/:id", function(req, res) {
   EventDAO.find({ host: req.params.id }, function(err, events) {
     if (err) res.send(err);
     else {
@@ -189,8 +172,8 @@ router.get('/getHostEvents/:id', function(req, res) {
   });
 });
 
-router.get('/getEvaluatorsEvents/:id', function(req, res) {
-  console.log('gettting get evaluators events by userid... ' + req.params.id);
+router.get("/getEvaluatorsEvents/:id", function(req, res) {
+ 
   EventDAO.find({ evaluator: req.params.id }, function(err, events) {
     if (err) res.send(err);
     else {
@@ -199,7 +182,8 @@ router.get('/getEvaluatorsEvents/:id', function(req, res) {
   });
 });
 
-router.post('/idea/evaluate/:id', async function(req, res) {
+router.post("/idea/evaluate/:id", async function(req, res) {
+  console.log(req.body);
   const { errors, isValid } = validateScore(req.body);
   if (!isValid) {
     return res.status(400).json(errors);
@@ -213,13 +197,3 @@ router.post('/idea/evaluate/:id', async function(req, res) {
 });
 
 module.exports = router;
-
-// db.events.aggregate([
-//      {
-//      "$lookup":{
-//      "from":"users",
-//      "localField":"host",
-//      "foreignField":"userid",
-//     "as":"userdetails"
-//      }
-//      },{ $match: { "host": 184 }}])

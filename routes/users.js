@@ -128,7 +128,6 @@ router.post('/login', (req, res) => {
 });
 
 router.get('/', function(req, res) {
-  console.log('getting all hosts... ');
   UserDAO.find({}, function(err, events) {
     if (err) res.send(err);
     else {
@@ -139,7 +138,6 @@ router.get('/', function(req, res) {
 });
 
 router.get('/edit/:id', function(req, res) {
-  console.log('gettting event by _id... ');
   UserDAO.findOne({ _id: req.params.id }, function(err, event) {
     if (err) res.send(err);
     else {
@@ -150,11 +148,6 @@ router.get('/edit/:id', function(req, res) {
 });
 
 router.put('/:id', function(req, res) {
-  console.log('updating host by _id... ' + req.params.id);
-  console.log('updating host by _id... ' + req.body.firstName);
-  console.log('updating host by _id... ' + req.body.lastName);
-  console.log('updating host by _id... ' + req.body.email);
-  console.log('updating host by _id... ' + req.body.doj);
   UserDAO.findOneAndUpdate(
     { _id: req.params.id },
     {
@@ -178,7 +171,6 @@ router.put('/:id', function(req, res) {
 });
 
 router.delete('/:id', function(req, res) {
-  console.log('deleting issue by _id... ' + req.params.id);
   UserDAO.findOneAndRemove({ _id: req.params.id }, function(err, event) {
     if (err) res.send(err);
     else {
@@ -189,7 +181,6 @@ router.delete('/:id', function(req, res) {
 });
 
 router.get('/getHosts', function(req, res) {
-  console.log('getting all hosts... ');
   UserDAO.find({ userType: 'HH' }, function(err, hosts) {
     if (err) res.send(err);
     else {
@@ -199,11 +190,9 @@ router.get('/getHosts', function(req, res) {
   });
 });
 router.get('/getEvaluators', function(req, res) {
-  console.log('getting all Evaluators... ');
   UserDAO.find({ userType: 'HE' }, function(err, hosts) {
     if (err) res.send(err);
     else {
-      console.log(hosts);
       res.json(hosts);
     }
   });
